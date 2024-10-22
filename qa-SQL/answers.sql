@@ -76,8 +76,7 @@ select Name from country order by SurfaceArea desc limit 10;
 --     11. List the five largest cities by population in Japan.
 select city.Name, city.Population from city join country on city.CountryCode = country.Code where country.Name = 'Japan' order by city.Population desc limit 5;
 --     12. List the names and country codes of every country with Elizabeth II as its Head of State. You will need to fix the mistake first!
-update country set country.HeadOfState = 'Elizabeth II' where country.HeadOfState like '%Elisabeth%';
-select Name, Code from country where HeadOfState like '%Elizabeth II%';
+update country set country.HeadOfState = 'Elizabeth II' where country.HeadOfState like '%Elisabeth%'; select Name, Code from country where HeadOfState like '%Elizabeth II%';
 --     13. List the top ten countries with the smallest population-to-area ratio. Discard any countries with a ratio of 0.
 select (Population / SurfaceArea) as ratio from country where (Population / SurfaceArea) > 0 order by (Population / SurfaceArea) limit 10;
 --     14. List every unique world language.
@@ -100,6 +99,12 @@ use movielens;
 --     1. List the titles and release dates of movies released between 1983-1993 in reverse chronological order.
 select title, release_date from movies where release_date > 1982 and release_date < 1994 order by release_date desc;
 --     2. Without using LIMIT, list the titles of the movies with the lowest average rating.
+select movies.title, ratings.rating from movies join ratings on movies.id = ratings.movie_id order by ratings.rating;
 --     3. List the unique records for Sci-Fi movies where male 24-year-old students have given 5-star ratings.
+select movies.title from movies join genres_movies on movies.id = genres_movies.movie_id join genres on genres.id = genres_movies.genre_id join ratings on ratings.movie_id = movies.id join users on users.id = ratings.user_id join occupations on users.occupation_id = occupations.id where genres.name like '%Sci-Fi%' and users.age = 24 and users.gender like '%m%' and occupations.name like '%student%' and ratings.rating = 5;
 --     4. List the unique titles of each of the movies released on the most popular release day.
+select distinct title from movies where release_date = (select release_date from movies group by release_date order by count(release_date) desc limit 1);
 --     5. Find the total number of movies in each genre; list the results in ascending numeric order.
+select genres.name, count(genres_movies.movie_id) from genres join genres_movies where genres.id = genres_movies.genre_id group by genres_movies.genre_id order by count(genres_movies.movie_id) asc;
+
+
